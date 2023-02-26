@@ -1,17 +1,19 @@
 import * as React from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
+import { CssBaseline, Grid, Container } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 
 import MainFeaturedPost from "./MainFuturedPost";
 import FeaturedPost from "./FeaturedPost";
-import { featuredPosts } from "./featuredPosts";
-import { mainFeaturedPost } from "./featuredPosts";
+import { RootState } from "../../../store";
 
 const theme = createTheme();
 
 export default function MainPage() {
+  const { mainFeaturedPost, featuredPosts } = useSelector(
+    (state: RootState) => state.posts
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -19,7 +21,7 @@ export default function MainPage() {
         <main>
           <MainFeaturedPost post={mainFeaturedPost} />
           <Grid container spacing={4}>
-            {featuredPosts.map((post) => (
+            {featuredPosts.map((post: any) => (
               <FeaturedPost key={post.title} post={post} />
             ))}
           </Grid>

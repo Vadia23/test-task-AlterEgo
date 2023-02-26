@@ -1,58 +1,79 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Grid,
+  Stack,
+  Container,
+  createTheme,
+  ThemeProvider,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+import { RootState, useAppDispatch } from "../../../store";
+import { fetchNews, selectAll, removeAllNews } from "./newsSlice";
+import NewsCard from "./NewsCard";
 
 const theme = createTheme();
 
 export default function Album() {
+  const [start, setStart] = useState(10);
+  const [newNewsLoaging, setNewNewsLoaging] = useState(false);
+  const { t } = useTranslation();
+
+  const dispatch = useAppDispatch();
+  const newsLoadingStatus = useSelector(
+    (state: RootState) => state.news.newsloadingStatus
+  );
+  const news = useSelector(selectAll);
+
+  useEffect(() => {
+    dispatch(fetchNews());
+
+    return () => {
+      setStart(10);
+      dispatch(removeAllNews());
+      setNewNewsLoaging(false);
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  const onLoadMoreClick = () => {
+    setNewNewsLoaging(true);
+    dispatch(fetchNews(start));
+    setStart((prev) => prev + 10);
+  };
+
+  if (newsLoadingStatus === "loading" && !newNewsLoaging) {
+    return (
+      <Container maxWidth="md" style={{ marginBottom: 30 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <main>
         <Container maxWidth="md" style={{ marginBottom: 30 }}>
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={6}>
-                <Card
-                  sx={{
-                    height: "140",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">Переглянути</Button>
-                    <Button size="small" style={{ color: "red" }}>
-                      Видалити
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
+            {news.map((el: any) => (
+              <NewsCard
+                key={el.id}
+                id={el.id}
+                title={el.title}
+                body={el.body}
+              />
             ))}
           </Grid>
           <Stack
@@ -62,10 +83,12 @@ export default function Album() {
             justifyContent="center"
           >
             <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-              <Button variant="contained">Повернутись на головну</Button>
+              <Button variant="contained">{t("backToHomeText")}</Button>
             </Link>
 
-            <Button variant="outlined">Завантажити ще</Button>
+            <Button onClick={onLoadMoreClick} variant="outlined">
+              {t("newsItemDownloadBtn")}
+            </Button>
           </Stack>
         </Container>
       </main>

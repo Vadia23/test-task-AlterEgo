@@ -1,27 +1,26 @@
 import * as React from "react";
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { CardActionArea, CardActions, Button } from "@mui/material";
+import {
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  CardMedia,
+  Card,
+  Grid,
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
 
-interface FeaturedPostProps {
-  post: {
-    date: string;
-    description: string;
-    image: string;
-    imageLabel: string;
-    title: string;
-  };
-}
+import { IFeaturedPostProps } from "../../../types";
 
-export default function FeaturedPost(props: FeaturedPostProps) {
+export default function FeaturedPost(props: IFeaturedPostProps) {
   const { post } = props;
 
+  const { t } = useTranslation();
+
   return (
-    <Grid item xs={12} md={3}>
-      <Card sx={{ maxWidth: 345 }}>
+    <Grid item xs={12} sm={6} md={3}>
+      <Card sx={{ maxWidth: "100%" }}>
         <CardActionArea>
           <CardMedia
             component="img"
@@ -45,7 +44,7 @@ export default function FeaturedPost(props: FeaturedPostProps) {
         </CardActionArea>
         <CardActions>
           <Button size="small" color="primary">
-            Читати повністтю...
+            {t("mainPageItemBtn")}
           </Button>
         </CardActions>
       </Card>
