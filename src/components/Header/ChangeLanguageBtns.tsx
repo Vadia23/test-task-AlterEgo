@@ -11,7 +11,7 @@ export default function ChangeLanguageBtns() {
 
   React.useEffect(() => {
     i18n.changeLanguage("ua");
-  }, []);
+  }, [i18n]);
 
   return (
     <Box>
