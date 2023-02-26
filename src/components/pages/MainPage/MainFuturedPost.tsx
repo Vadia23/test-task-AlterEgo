@@ -1,22 +1,12 @@
 import * as React from "react";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import Box from "@mui/material/Box";
+import { Paper, Typography, Grid, Link, Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
-interface MainFeaturedPostProps {
-  post: {
-    description: string;
-    image: string;
-    imageText: string;
-    linkText: string;
-    title: string;
-  };
-}
+import { IMainFeaturedPostProps } from "../../../types";
 
-export default function MainFeaturedPost(props: MainFeaturedPostProps) {
+export default function MainFeaturedPost(props: IMainFeaturedPostProps) {
   const { post } = props;
+  const { t } = useTranslation();
 
   return (
     <Paper
@@ -79,7 +69,7 @@ export default function MainFeaturedPost(props: MainFeaturedPostProps) {
                 borderRadius: 5,
               }}
             >
-              {post.linkText}
+              {t("mainPageItemBtn")}
             </Link>
           </Box>
         </Grid>
